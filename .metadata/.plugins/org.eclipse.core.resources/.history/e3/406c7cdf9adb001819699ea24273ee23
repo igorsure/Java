@@ -1,0 +1,10 @@
+package test;
+
+public class test {
+	test(){
+		System.out.println("asdffd");
+	}
+	public static void main(String[] args) {
+		test tst=new test();
+	}
+}

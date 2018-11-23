@@ -1,0 +1,177 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Solution {
+
+	Solution(){
+        int t = Integer.parseInt(scan.nextLine().trim());
+
+        for (int t_i = 0; t_i < t; t_i++) {
+                String[] x1y1x2y2 = scan.nextLine().split(" ");
+
+                int x1 = Integer.parseInt(x1y1x2y2[0].trim());
+                int y1 = Integer.parseInt(x1y1x2y2[1].trim());
+                int x2 = Integer.parseInt(x1y1x2y2[2].trim());
+                int y2 = Integer.parseInt(x1y1x2y2[3].trim());
+                checkmate(x1, y1, x2, y2);
+
+        }
+		
+	}
+    void checkmate(int x1, int y1, int x2, int y2) {
+    	
+         if (checkmate2(x1, y1, x2, y2)) return;
+         checkmate3(x1, y1, x2, y2);
+
+
+    }
+
+	private boolean checkmate2(int x1, int y1, int x2, int y2) {
+		int[][] brd =new int[8][8];
+		brd[x1][y1]=-1;
+		brd[x2][y2]=-1;
+		for(int ii=0; ii<64;ii++) {
+			int i1=ii/8;
+			int j1=ii%8;
+			if (i1==x1 && j1==y1) continue;
+			if (i1==x2 && j1==y2) continue;
+			brd[i1][j1]=1;
+			for(int ii1=0; ii1<64;ii1++) {
+				int i2=ii1/8;
+				int j2=ii1%8;
+				if (i2==x1 && j2==y1) continue;
+				if (i2==x2 && j2==y2) continue;
+				if (i2==i1 && j2==j1) continue;
+				brd[i2][j2]=1;
+				dumpBoard(brd);
+				boolean mate=true;
+				if(!ismate(x1,y1,brd)) mate=false;
+				if(!ismate(x2,y2,brd)) mate=false;
+				//printRes(new int[][]{{i1,j1},{i2,j2}});
+				if (mate) {
+					printRes(new int[][]{{i1,j1},{i2,j2}});
+					//dumpBoard(brd);
+					return true;
+				}
+				brd[i2][j2]=0;
+			}
+			brd[i1][j1]=0;
+		}
+		return false;
+	}
+
+	private void printRes(int[][] is) {
+		System.out.println(is.length);
+		for(int i=0;i<is.length;i++) {
+			System.out.println("Q "+is[i][0]+" "+is[i][1]);
+		}
+		
+		
+	}
+	void dumpBoard(int[][] brd) {
+		for(int i=0;i<8;i++) {
+			System.out.print("[");
+			for(int j=0;j<8;j++) {
+				int num=brd[i][j];
+				char ch=' ';
+				if (num==-1) ch='k';
+				if (num==1) ch='Q';
+				System.out.print(ch);
+			}
+			System.out.println("]");
+		}
+		System.out.println("");
+	}
+	private boolean ismate(int x1, int y1, int[][] brd) {
+		if (!ischeck(x1,y1,brd)) return false;
+		for(int dx=-1;dx<=1;dx++) {
+			for(int dy=-1;dy<=1;dy++) {
+				if (dx==0 && dy==0) continue;
+				int mx=x1+dx;
+				int my=y1+dy;
+				if (mx<0 || mx>7 || my<0 || my>7) continue;
+				if (brd[mx][my]==-1) continue;
+				brd[mx][my]=-1;
+				brd[x1][y1]=0;
+				boolean checked=!ischeck(mx,my,brd);
+				brd[mx][my]=0;
+				brd[x1][y1]=-1;
+				if (checked) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	private boolean ischeck(int x1, int y1, int[][] brd) {
+		// TODO Auto-generated method stub
+		for(int dx=-1;dx<=1;dx++) {
+			for(int dy=-1;dy<=1;dy++) {
+				if (dx==0 && dy==0) continue;
+				if (ischeck1(x1+dx,y1+dy,brd,new int[] {dx,dy})) return true;
+			}
+		}
+		return false;
+	}
+	private boolean ischeck1(int x1, int y1, int[][] brd,int[] dir) {
+		if (x1<0 || x1>7  || y1<0 || y1>7) return false;
+		if (brd[x1][y1]==-1) return false;
+		if (brd[x1][y1]==1) return true;
+		
+		return ischeck1(x1+dir[0],y1+dir[1],brd,dir);
+	}
+	private void checkmate3(int x1, int y1, int x2, int y2) {
+		int[][] brd =new int[8][8];
+		brd[x1][y1]=-1;
+		brd[x2][y2]=-1;
+		for(int ii=0; ii<64;ii++) {
+			int i1=ii/8;
+			int j1=ii%8;
+			if (i1==x1 && j1==y1) continue;
+			if (i1==x2 && j1==y2) continue;
+			brd[i1][j1]=1;
+			for(int ii1=0; ii1<64;ii1++) {
+				int i2=ii1/8;
+				int j2=ii1%8;
+				if (i2==x1 && j2==y1) continue;
+				if (i2==x2 && j2==y2) continue;
+				if (i2==i1 && j2==j1) continue;
+				brd[i2][j2]=1;
+				for(int ii2=0; ii2<64;ii2++) {
+					int i3=ii2/8;
+					int j3=ii2%8;
+					if (i3==x1 && j3==y1) continue;
+					if (i3==x2 && j3==y2) continue;
+					if (i3==i1 && j3==j1) continue;
+					if (i3==i2 && j3==j2) continue;
+					brd[i3][j3]=1;
+					boolean mate=true;
+					//dumpBoard(brd);
+					if(!ismate(x1,y1,brd)) mate=false;
+					if(!ismate(x2,y2,brd)) mate=false;
+					if (mate) {
+						printRes(new int[][]{{i1,j1},{i2,j2},{i3,j3}});
+						return;
+					}
+					brd[i3][j3]=0;
+				}
+				brd[i2][j2]=0;
+			}
+			brd[i1][j1]=0;
+		}
+		
+	}
+
+
+	
+
+	final Scanner scan = new Scanner(System.in);
+
+    public static void main(String[] args) {
+    	Solution sol=new Solution();
+
+    }
+}

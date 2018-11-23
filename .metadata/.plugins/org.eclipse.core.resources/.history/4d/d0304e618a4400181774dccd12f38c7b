@@ -1,0 +1,61 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Solution {
+	long[] f;
+	int[][] teams;
+	Solution()  throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String[] nm = scanner.nextLine().split(" ");
+
+        int n = Integer.parseInt(nm[0]);
+
+        int m = Integer.parseInt(nm[1]);
+        teams=new int[m][];
+        f=new long[m];
+        long result = maximumEfficiency(n, m);
+        for(int i=0;i<m;i++) {
+        	int k=scanner.nextInt();
+        	f[i]=scanner.nextInt();
+        	teams[i]=new int[k];
+        	for(int j=0;j<k;j++) {
+        		teams[i][j]=scanner.nextInt();
+        	}
+        }
+        dumpArr2(teams);
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+ 		
+	}
+	void dumpArr(int[] ar) {
+		for(int i=0;i<ar.length;i++) {
+			System.out.println(ar[i]+" ");
+		}
+		System.out.println("");
+	}
+	void dumpArr2(int[][] ar) {
+		for(int i=0;i<ar.length;i++) {
+			dumpArr(ar[i]);
+		}
+		System.out.println("");
+	}
+    // Complete the maximumEfficiency function below.
+     long maximumEfficiency(int n, int m) {
+
+    	 return 0;	
+    }
+
+    private final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+    	Solution sol=new Solution();
+   }
+}

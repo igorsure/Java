@@ -1,0 +1,42 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+
+public class Solution {
+	int n,m,k,t;
+	Solution(){
+
+        String[] nmkt = scanner.nextLine().split(" ");
+
+        n = Integer.parseInt(nmkt[0]);
+
+        m = Integer.parseInt(nmkt[1]);
+
+        k = Integer.parseInt(nmkt[2]);
+
+        t = Integer.parseInt(nmkt[3]);
+        for(int i=0;i<m;i++) {
+        	int node1=scanner.nextInt();
+        	int node2=scanner.nextInt();
+        	System.out.println(node1+" "+node2);
+        }
+        int result = minimumBrokenness(n, m, k, t);
+        scanner.close();
+		
+	}
+    // Complete the minimumBrokenness function below.
+     int minimumBrokenness(int n, int m, int k, int t) {
+        // Return the minimum possible brokenness of a truck among all k trucks driving from city 0 to city n-1. Take the information about roads from standard input.
+
+    }
+
+    private final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+    	Solution sol=new Solution();
+    }
+}

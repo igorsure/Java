@@ -1,0 +1,94 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+
+public class Solution {
+	long[] f;
+	int[][] teams;
+	int n,m;
+	HashSet<Integer> first;
+	Solution()  throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        String[] nm = scanner.nextLine().split(" ");
+
+        n = Integer.parseInt(nm[0]);
+
+        m = Integer.parseInt(nm[1]);
+        teams=new int[m][];
+        f=new long[m];
+        long result = maximumEfficiency(n, m);
+        for(int i=0;i<m;i++) {
+        	int k=scanner.nextInt();
+        	f[i]=scanner.nextInt();
+        	teams[i]=new int[k];
+        	for(int j=0;j<k;j++) {
+        		teams[i][j]=scanner.nextInt();
+        	}
+        }
+        dumpArr2(teams);
+        result=doit();
+        bufferedWriter.write(String.valueOf(result));
+        bufferedWriter.newLine();
+
+        bufferedWriter.close();
+
+        scanner.close();
+	}
+	long doit() {
+		long result=0;
+		result=Math.max(result, doitOne());
+		return result;
+	}
+	private long doitOne() {
+		long res=0;
+		first=new HashSet<Integer>();
+		for(int i=1;i<=n;i++) {
+			 first.add(i);
+			 long resCurrent=0;
+			 for(int j=0;j<m;j++) {
+			     int amount=calcFirstMembers(teams[j]);
+			     if (amount==0 || amount==teams[j].length) {
+			    	 resCurrent+=f[j];
+			     }
+			 }
+		     first.remove(i);
+		     res=Math.max(res,resCurrent);
+		}
+		return res;
+	}
+	private int calcFirstMembers(int[] team) {
+		int res=0;
+		for(int i=0;i<team.length;i++) {
+			if (first.contains(team[i])){
+				res++;
+			}
+		}
+		return res;
+	}
+	void dumpArr(int[] ar) {
+		for(int i=0;i<ar.length;i++) {
+			System.out.print(ar[i]+" ");
+		}
+		System.out.println("");
+	}
+	void dumpArr2(int[][] ar) {
+		for(int i=0;i<ar.length;i++) {
+			dumpArr(ar[i]);
+		}
+		System.out.println("");
+	}
+    // Complete the maximumEfficiency function below.
+     long maximumEfficiency(int n, int m) {
+
+    	 return 0;	
+    }
+
+    private final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+    	Solution sol=new Solution();
+   }
+}

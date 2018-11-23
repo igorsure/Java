@@ -1,0 +1,81 @@
+package test;
+
+import java.util.*;
+
+public class testDFS {
+	boolean[] visited;
+	HashMap<Integer,HashSet<Integer>> graph;
+	testDFS(){
+		createTestGraph1();
+		doDFS();
+		doBFS();
+	}
+	void doDFS() {
+		visited=new boolean[graph.size()+1];
+		System.out.print("DFS: ");
+		DFS(1);
+		System.out.println("");
+	}
+	void doBFS() {
+		visited=new boolean[graph.size()+1];
+		System.out.print("BFS: ");
+		BFS(1);
+		System.out.println("");
+	}
+	void DFS(int node) {
+		visited[node]=true;
+		System.out.print(node+" ");
+		for(int neib:graph.get(node)) {
+			if (!visited[neib]) DFS(neib);
+		}
+	}
+	void BFS(int node) {
+		Queue<Integer> queue=new LinkedList<Integer>();
+		visited[node]=true;
+		queue.add(node);
+		System.out.print(node+" ");
+		while(!queue.isEmpty()) {
+			int next=queue.remove();
+			for(int neib:graph.get(next)) {
+				//System.out.print(neib+" "+visited[neib]);
+				if (visited[neib]) continue;
+				queue.add(neib);
+				System.out.print(neib+" ");
+				visited[neib]=true;
+			}
+		}
+	}
+	void init() {
+		graph=new HashMap<Integer,HashSet<Integer>>();
+	}
+	void addNode(int node) {
+		if (graph.containsKey(node)) return;
+		graph.put(node, new HashSet<Integer>());
+	}
+	void addEdge(int node1,int node2) {
+		addNode(node1);
+		addNode(node2);
+		graph.get(node1).add(node2);
+		graph.get(node2).add(node1);
+	}
+	void dumpGraph() {
+		for(int node: graph.keySet()) {
+			System.out.println(node+" "+graph.get(node));
+		}
+	}
+	void createTestGraph1(){
+		init();
+		addEdge(1,2);
+		addEdge(1,3);
+		addEdge(1,3);
+		addEdge(2,4);
+		addEdge(4,5);
+		addEdge(5,6);
+		addEdge(4,6);
+		dumpGraph();
+	}
+	public static void main(String[] args) {
+		testDFS dfs=new testDFS();
+	}	
+
+}

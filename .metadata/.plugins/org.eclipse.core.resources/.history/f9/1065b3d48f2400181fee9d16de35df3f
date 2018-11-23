@@ -1,0 +1,29 @@
+
+public class Board {
+	int[][] brd;
+	//             123456
+	String white=" PNBRQK";
+	String black=" pnbrqk";
+	Board(){
+		brd=new int[8][8];
+	}
+	void dump() {
+		for(int i=0;i<8;i++) {
+			System.out.print("[");
+			for(int j=0;j<8;j++) {
+				System.out.print(showPiece(brd[i][j]));
+			}
+			System.out.println("]");
+		}
+	}
+	private char showPiece(int piece) {
+		if (piece==0) return ' ';
+		if (piece>0) return white.charAt(piece);
+		return black.charAt(piece);
+	}
+	public static void main(String[] args) {
+		Board board=new Board();
+		board.dump();
+	}
+
+}

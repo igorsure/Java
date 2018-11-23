@@ -1,0 +1,299 @@
+import java.io.*;
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import java.util.regex.*;
+public class Stringer {
+	public static int countStringer=0;
+	static String alphabet="abcdefghijklmnopqrtuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345";
+	StringBuilder s;
+	long amount;
+	long value;
+	Stringer(StringBuilder sb){
+		s=sb;
+		amount=1;
+		value=0;
+		
+	}
+	Stringer(Stringer sb){
+		s=sb.s;
+		amount=sb.amount;
+		value=sb.value;
+		
+	}
+	Stringer addChar(char ch) {
+		Stringer str=new Stringer(this);
+		str.s.append(ch);
+		return str;
+	}
+	void addStringer(Stringer str) {
+		amount+=str.amount;
+		
+	}
+    int calcFunc() {
+    	HashSet<Integer> set=new HashSet<Integer>();
+    	int len=s.length();
+    	for(int i=1;i<len;i++) {
+    		if (s.charAt(i)==s.charAt(0)) {
+    			set.add(i);
+    		}
+    	}
+    	if (set.isEmpty()) return 0;
+    	int curInd=1;
+    	while(curInd<len) {
+    		HashSet<Integer> set1=new HashSet<Integer>();
+    		for(int ind:set) {
+    			if (ind==len-1) continue;
+    			if (s.charAt(ind+1)==s.charAt(curInd)) {
+    				set1.add(ind+1);
+    			}
+    		}
+    		if (set1.isEmpty()) return curInd;
+    		set=set1;
+    		curInd++;
+    		
+    	}
+    	return len-1;
+    }
+	
+	void normalize() {
+		
+		HashMap<Character,Character> map=new HashMap<Character,Character>();
+		int ind=0;
+		char ch='a';
+		StringBuilder sNext=new StringBuilder(s.length());
+		for(int i=0;i<s.length();i++) {
+			char nextChar=s.charAt(i);
+			if (!map.containsKey(nextChar)) {
+				ch=alphabet.charAt(ind++);
+				map.put(nextChar,ch);
+			}
+			sNext.append(map.get(nextChar));
+		}
+		s=sNext;
+		
+	}
+    @Override
+    public boolean equals(Object obj)
+    {
+         
+	    // checking if both the object references are 
+	    // referring to the same object.
+	    if(this == obj)
+	            return true;
+         
+        // it checks if the argument is of the 
+        // type Geek by comparing the classes 
+        // of the passed argument and this object.
+        // if(!(obj instanceof Geek)) return false; ---> avoid.
+        if(obj == null || obj.getClass()!= this.getClass())
+            return false;
+         
+        // type casting of the argument. 
+        Stringer str=(Stringer) obj;
+        return this.s==str.s;
+    }
+    public String toString() {
+    	return s+":"+this.calcFunc();
+    }
+    @Override
+    public int hashCode()
+    {
+         
+        return countStringer++;
+    }	
+    public static  void test(String s) {
+		Stringer str=new Stringer(new StringBuilder(s));
+		System.out.println(str);
+		str.normalize();
+		System.out.println(str);
+		System.out.println("");
+    	
+    }
+	public static void main(String[] args) {
+		test("abcdlkjabc");
+		test("dhyabcdlkdhjabc");
+	}
+
+}
+
+public class Solution {
+	char[][] lst,lst1;
+	int n,k;
+	HashMap<StringBuilder,Stringer> stringers;
+	final int modulo=1000000007;
+	HashSet<Integer> set,set1;
+	Solution()  throws IOException {
+        //BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.in));
+
+
+        n = scanner.nextInt();
+        k = scanner.nextInt();
+
+        long result = doit1();
+        System.out.println(result);
+
+        scanner.close();
+		
+	}
+	void initLst() {
+		lst=new char[k][1];
+		for(int i=0;i<k;i++) {
+			lst[i][0]=(char) ('a'+i);
+		}
+	}
+	void createLst() {
+		initLst();
+		//dumpLst();
+		for(int i=0;i<n-1;i++) {
+			createNextLst();
+			//dumpLst();
+		}
+	}
+	void createStringersLst(){
+		initStringerLst();
+		for(int i=0;i<n-1;i++) {
+			createNextStringerLst();
+			//dumpLst();
+		}
+
+	}
+	private void createNextStringerLst() {
+		HashMap<StringBuilder,Stringer> stringers1=new  HashMap<StringBuilder,Stringer>();
+		for(int i=0;i<k;i++) {
+			for(StringBuilder str:stringers.keySet()) {
+				StringBuilder nextSB=new StringBuilder(str);
+				nextSB.append(Stringer.alphabet.charAt(i));
+				Stringer next=new Stringer(nextSB);
+				next.normalize();
+				StringBuilder key=next.s;
+				if (stringers1.containsKey(next.s)) {
+					stringers1.get(key).addStringer(next);
+				} else {
+					stringers1.put(key, next);
+				}
+			}
+		}
+		stringers=stringers1;
+	}
+	private void initStringerLst() {
+		stringers=new HashMap<StringBuilder,Stringer>();
+		for(int i=0;i<k;i++) {
+			StringBuilder sb=new StringBuilder(""+Stringer.alphabet.charAt(i));
+			stringers.put(sb, new Stringer(sb));
+		}
+		
+	}
+    long calcStringersResult() {
+    	long res=0;
+    	long size=0;
+    	for(StringBuilder sb:stringers.keySet()) {
+    		res+=stringers.get(sb).calcFunc()*stringers.get(sb).amount;
+    		size+=stringers.get(sb).amount;
+    	}
+    	res=(res*power(k,n))/size;
+    	return res%modulo;
+    }
+	void createNextLst() {
+		int len=lst.length;
+		int curLen=lst[0].length;
+		lst1=new char[len*k][curLen+1];
+		//System.out.println("n:"+n+" k:"+k);
+		//System.out.println("  len:"+len+" curLen:"+curLen+"");
+		for(int j1=0;j1<k;j1++) {
+			//char nextChar=(char) ('a'+j1);
+			for(int i=0;i<len;i++) {
+				//System.out.println(" ind:"+(i+k*j1)+" i:"+i+" j1:"+j1);
+				for(int j=0;j<curLen;j++) {
+					lst1[i+len*j1][j]=lst[i][j];
+				}
+			}
+		}
+		char nextChar=(char) ('a');
+		int counter=0;
+		for(int i=0;i<lst1.length;i++) {
+				lst1[i][curLen]=nextChar;
+				counter++;
+				if ((counter%len)==0) { 
+					counter=0;
+					nextChar+=1;
+				}
+		}
+		lst=lst1;
+	}
+	void dumpLst() {
+		for(int i=0;i<lst.length;i++) {
+			dumpLstString(i);
+		}
+	}
+	void dumpLstString(int ind) {
+		for(int i=0;i<lst[ind].length;i++) {
+			System.out.print(lst[ind][i]);
+		}
+		System.out.println("");
+	}
+    long doit() {
+    	createLst();
+    	return calcResult();
+    	//dumpLst();
+        /*
+         * Write your code here.
+         */
+        //return 0;
+    }
+    long doit1() {
+    	createStringersLst();
+    	return calcStringersResult();
+    	//dumpLst();
+        /*
+         * Write your code here.
+         */
+        //return 0;
+    }
+    long calcResult() {
+    	long res=0;
+    	for(int i=0;i<lst.length;i++) {
+    		res+=calcFunc(lst[i]);
+    	}
+    	res=(res*power(k,n))/lst.length;
+    	return res%modulo;
+    }
+    long power(int k,int power) {
+    	if (power==0) return 1;
+    	long res=k;
+    	for(int i=2;i<=power;i++) {
+    		res*=k;
+    	}
+    	return res;
+    }
+    int calcFunc(char[] a) {
+    	set=new HashSet<Integer>();
+    	int len=a.length;
+    	for(int i=1;i<len;i++) {
+    		if (a[i]==a[0]) {
+    			set.add(i);
+    		}
+    	}
+    	if (set.isEmpty()) return 0;
+    	int curInd=1;
+    	while(curInd<len) {
+    		set1=new HashSet<Integer>();
+    		for(int ind:set) {
+    			if (ind==len-1) continue;
+    			if (a[ind+1]==a[curInd]) {
+    				set1.add(ind+1);
+    			}
+    		}
+    		if (set1.isEmpty()) return curInd;
+    		set=set1;
+    		curInd++;
+    		
+    	}
+    	return len-1;
+    }
+ 	private final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+    	Solution sol=new Solution();
+    }
+}
